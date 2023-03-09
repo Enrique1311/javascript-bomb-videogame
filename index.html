@@ -14,22 +14,24 @@
 			rel="stylesheet"
 			href="./styles.css"
 		/>
-		<title>Bombs Videogame</title>
+		<title>Rocket Videogame</title>
 	</head>
 	<body>
 		<div class="game-container">
+			<div class="info">
+				<p>Lives <span id="lives"></span></p>
+				<p>Time⏱️ <span id="time"></span></p>
+				<p class="record">Record🏁 <span id="record"></span></p>
+				<p id="result"></p>
+			</div>
 			<canvas id="game"></canvas>
 			<div class="control-buttons">
-				<button id="up">⬆️</button>
 				<button id="left">⬅️</button>
+				<div class="up-down">
+					<button id="up">⬆️</button>
+					<button id="down">⬇️</button>
+				</div>
 				<button id="right">➡️</button>
-				<button id="down">⬇️</button>
-			</div>
-			<div class="info">
-				<p>Lives: <span id="lives"></span></p>
-				<p>Time⏱️: <span id="time"></span></p>
-				<p>Record🏁: <span id="record"></span></p>
-				<p id="result"></p>
 			</div>
 		</div>
 		<script src="./maps.js"></script>
