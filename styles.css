@@ -23,8 +23,6 @@ body {
 	display: flex;
 	justify-content: space-between;
 	flex-wrap: wrap;
-	width: 80%;
-	max-width: 550px;
 }
 p {
 	margin: 5px;
@@ -57,6 +55,39 @@ button {
 .up-down {
 	display: flex;
 	flex-direction: column;
+}
+
+.modal-container {
+	display: flex;
+	justify-content: center;
+	background-color: rgb(0, 0, 0, 0.8);
+	width: 100%;
+	height: 100vh;
+	position: absolute;
+	margin: 0;
+	top: 0;
+	left: 0;
+	z-index: 10;
+}
+.message-modal {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	background-color: #4747f4;
+	position: absolute;
+	top: 20%;
+	border-radius: 20px;
+	padding: 100px 30px;
+	gap: 20px;
+	margin: 0 20px;
+}
+.message-modal p {
+	font-size: 20px;
+	text-align: center;
+}
+.inactive {
+	display: none;
 }
 
 @media (max-width: 400px) {

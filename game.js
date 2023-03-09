@@ -7,7 +7,10 @@ const buttonLeft = document.querySelector("#left");
 const livesSpan = document.querySelector("#lives");
 const timeSpan = document.querySelector("#time");
 const spanRecord = document.querySelector("#record");
-const pResult = document.querySelector("#result");
+const modal = document.querySelector("#modal");
+const pFinalResult = document.querySelector("#finalResult");
+const yesButton = document.querySelector("#yesButton");
+const noButton = document.querySelector("#noButton");
 
 let canvasSize;
 let elementsSize;
@@ -16,6 +19,7 @@ let lives = 3;
 let timeStart;
 let timePlayer;
 let timeInterval;
+let myWindow;
 
 const playerPosition = {
 	x: undefined,
@@ -32,6 +36,7 @@ let bombsPosition = [];
 window.addEventListener("load", setCanvasSize);
 window.addEventListener("resize", setCanvasSize);
 
+// Hace que el canvas sea responsivo
 function setCanvasSize() {
 	// innerWidth calcula el ancho de la ventana del html y innerHeight calcula el ancho de la ventana del html
 	if (window.innerWidth > window.innerHeight) {
@@ -51,6 +56,7 @@ function setCanvasSize() {
 	startGame();
 }
 
+// Comienza el juego desplegamdo el canvas
 function startGame() {
 	gameContext.font = elementsSize + "px sans-serif";
 	gameContext.textAlign = "end";
@@ -103,6 +109,8 @@ function startGame() {
 
 	movePlayer();
 }
+
+// Movimientos del jugador
 function movePlayer() {
 	const xGiftCrash = playerPosition.x.toFixed(2) == giftPosition.x.toFixed(2);
 	const yGiftCrash = playerPosition.y.toFixed(2) == giftPosition.y.toFixed(2);
@@ -128,12 +136,21 @@ function movePlayer() {
 	gameContext.fillText(emojis["PLAYER"], playerPosition.x, playerPosition.y);
 }
 
+// Cada vez que se pasa un nivel, pasa al siguiente
 function levelWinner() {
 	console.log("Subiste de nivel");
 	level++;
 	startGame();
 }
 
+// Muestra mensaje con resultados
+function showModal() {
+	modal.classList.toggle("inactive");
+}
+
+function changeModalMessage() {}
+
+// Cada vez que falla un nivel
 function levelFailed() {
 	lives--;
 	console.log(lives);
@@ -148,6 +165,7 @@ function levelFailed() {
 	startGame();
 }
 
+// Muestra las vidas
 function showLives() {
 	const heartsArray = Array(lives).fill(emojis["HEART"]);
 	console.log(heartsArray);
@@ -155,31 +173,38 @@ function showLives() {
 	heartsArray.forEach((heart) => livesSpan.append(heart));
 }
 
+// Muestra el timer
 function showTimer() {
 	timeSpan.innerHTML = Date.now() - timeStart;
 }
 
+// Mestra el record
 function showRecord() {
 	spanRecord.innerHTML = localStorage.getItem("record_time");
 }
 
+// Cuando completas todos los niveles
+yesButton.addEventListener("click", startGame);
+
 function gameWinner() {
-	console.log("GANASTEEEEE!!!!!!");
 	clearInterval(timeInterval);
 
 	const recordTime = localStorage.getItem("record_time");
 	const playerTime = Date.now() - timeStart;
 
+	showModal();
+
 	if (recordTime) {
 		if (playerTime <= recordTime) {
 			localStorage.setItem("record_time", playerTime);
-			pResult.innerHTML = "¡Felicidades! ¡Superáste el record!";
+			pFinalResult.innerHTML = "¡Felicidades! ¡Superáste el record!";
 		} else {
-			pResult.innerHTML = "Lo siento😔... No superáste el record...";
+			pFinalResult.innerHTML =
+				"No superáste el record... ¡Buena suerte para la próxima!";
 		}
 	} else {
 		localStorage.setItem("record_time", playerTime);
-		pResult.innerHTML =
+		pFinalResult.innerHTML =
 			"Como es la primera vez que juegas, tienes el record...👍";
 	}
 	console.log({ recordTime, playerTime });
@@ -192,6 +217,7 @@ buttonDown.addEventListener("click", moveDown);
 buttonRight.addEventListener("click", moveRight);
 buttonLeft.addEventListener("click", moveLeft);
 
+// Le da los eventos a los botones
 function moveByKeys(event) {
 	if (event.key === "ArrowUp") moveUp();
 	else if (event.key === "ArrowDown") moveDown();
