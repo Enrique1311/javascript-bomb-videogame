@@ -6,9 +6,11 @@ const buttonRight = document.querySelector("#right");
 const buttonLeft = document.querySelector("#left");
 const livesSpan = document.querySelector("#lives");
 const timeSpan = document.querySelector("#time");
+const levelSpan = document.querySelector("#level");
 const spanRecord = document.querySelector("#record");
 const modal = document.querySelector("#modal");
 const pFinalResult = document.querySelector("#finalResult");
+const pTimeResult = document.querySelector("#timeResult");
 const yesButton = document.querySelector("#yesButton");
 const noButton = document.querySelector("#noButton");
 
@@ -79,6 +81,8 @@ function startGame() {
 	console.log({ map, mapRows, mapRowColumns });
 
 	showLives();
+
+	showLevel();
 
 	bombsPosition = [];
 
@@ -178,6 +182,11 @@ function showTimer() {
 	timeSpan.innerHTML = Date.now() - timeStart;
 }
 
+function showLevel() {
+	levelSpan.innerHTML = level;
+}
+1;
+
 // Mestra el record
 function showRecord() {
 	spanRecord.innerHTML = localStorage.getItem("record_time");
@@ -192,9 +201,8 @@ function gameWinner() {
 	const recordTime = localStorage.getItem("record_time");
 	const playerTime = Date.now() - timeStart;
 
-	showModal();
-
 	if (recordTime) {
+		(pTimeResult.innerHTML = "Tu tiempo fue "), recordTime;
 		if (playerTime <= recordTime) {
 			localStorage.setItem("record_time", playerTime);
 			pFinalResult.innerHTML = "¡Felicidades! ¡Superáste el record!";
@@ -207,7 +215,11 @@ function gameWinner() {
 		pFinalResult.innerHTML =
 			"Como es la primera vez que juegas, tienes el record...👍";
 	}
+	showModal();
 	console.log({ recordTime, playerTime });
+	level = 0;
+	lives = 3;
+	timeStart = undefined;
 }
 
 window.addEventListener("keydown", moveByKeys);
