@@ -8,11 +8,14 @@ const livesSpan = document.querySelector("#lives");
 const timeSpan = document.querySelector("#time");
 const levelSpan = document.querySelector("#level");
 const spanRecord = document.querySelector("#record");
+const explossion = document.querySelector("#explossion");
 const modal = document.querySelector("#modal");
 const pFinalResult = document.querySelector("#finalResult");
 const pTimeResult = document.querySelector("#timeResult");
 const yesButton = document.querySelector("#yesButton");
 const noButton = document.querySelector("#noButton");
+const divModalButtons = document.querySelector("#modalButtons");
+const thanksEndMessage = document.querySelector("#thanksEndMessage");
 
 let canvasSize;
 let elementsSize;
@@ -58,7 +61,7 @@ function setCanvasSize() {
 	startGame();
 }
 
-// Comienza el juego desplegamdo el canvas
+// Comienza el juego desplegando el canvas
 function startGame() {
 	gameContext.font = elementsSize + "px sans-serif";
 	gameContext.textAlign = "end";
@@ -84,7 +87,7 @@ function startGame() {
 
 	showLevel();
 
-	bombsPosition = [];
+	aliensPosition = [];
 
 	gameContext.clearRect(0, 0, canvasSize, canvasSize);
 
@@ -104,7 +107,7 @@ function startGame() {
 				giftPosition.x = xPos;
 				giftPosition.y = yPos;
 			} else if (col == "X") {
-				bombsPosition.push({ x: xPos, y: yPos });
+				aliensPosition.push({ x: xPos, y: yPos });
 			}
 
 			gameContext.fillText(emoji, xPos, yPos);
@@ -127,17 +130,23 @@ function movePlayer() {
 		levelWinner();
 	}
 
-	const bombCrash = bombsPosition.find((bomb) => {
-		const xBombCrash = bomb.x.toFixed(2) == playerPosition.x.toFixed(2);
-		const yBombCrash = bomb.y.toFixed(2) == playerPosition.y.toFixed(2);
-		return xBombCrash && yBombCrash;
+	const alienCrash = aliensPosition.find((alien) => {
+		const xAlienCrash = alien.x.toFixed(2) == playerPosition.x.toFixed(2);
+		const yAlienCrash = alien.y.toFixed(2) == playerPosition.y.toFixed(2);
+		return xAlienCrash && yAlienCrash;
 	});
 
-	if (bombCrash) {
+	if (alienCrash) {
+		setInterval(showExplossion(), 1000);
 		levelFailed();
 	}
 
 	gameContext.fillText(emojis["PLAYER"], playerPosition.x, playerPosition.y);
+}
+
+// Cuando hay colisión con un alien
+function showExplossion() {
+	explossion.classList.toggle("inactive");
 }
 
 // Cada vez que se pasa un nivel, pasa al siguiente
@@ -152,21 +161,26 @@ function showModal() {
 	modal.classList.toggle("inactive");
 }
 
-function changeModalMessage() {}
-
 // Cada vez que falla un nivel
 function levelFailed() {
 	lives--;
 	console.log(lives);
 
 	if (lives <= 0) {
-		level = 0;
-		lives = 3;
-		timeStart = undefined;
+		lossGame();
 	}
 	playerPosition.x = undefined;
 	playerPosition.y = undefined;
 	startGame();
+}
+
+// Cuando se pierden todas las vidas
+function lossGame() {
+	showModal();
+	pFinalResult.innerHTML = "¡Upss!. Perdíste todas tus vidas...";
+	level = 0;
+	lives = 3;
+	timeStart = undefined;
 }
 
 // Muestra las vidas
@@ -182,18 +196,37 @@ function showTimer() {
 	timeSpan.innerHTML = Date.now() - timeStart;
 }
 
+// Muestra el nivel
 function showLevel() {
 	levelSpan.innerHTML = level;
 }
 1;
 
-// Mestra el record
+// Muestra el record
 function showRecord() {
 	spanRecord.innerHTML = localStorage.getItem("record_time");
 }
 
+// Recomenzar el juego
+function restartGame() {
+	level = 0;
+	lives = 3;
+	timeStart = undefined;
+	playerPosition.x = undefined;
+	playerPosition.y = undefined;
+	showModal();
+	startGame();
+}
+
+// Terminar el juego
+function stopGame() {
+	showModal();
+	thanksEndMessage.classList.toggle("inactive");
+}
+
 // Cuando completas todos los niveles
-yesButton.addEventListener("click", startGame);
+yesButton.addEventListener("click", restartGame);
+noButton.addEventListener("click", stopGame);
 
 function gameWinner() {
 	clearInterval(timeInterval);
@@ -201,8 +234,10 @@ function gameWinner() {
 	const recordTime = localStorage.getItem("record_time");
 	const playerTime = Date.now() - timeStart;
 
+	showModal();
+
+	pTimeResult.innerHTML = `Tu tiempo fue ${playerTime}`;
 	if (recordTime) {
-		(pTimeResult.innerHTML = "Tu tiempo fue "), recordTime;
 		if (playerTime <= recordTime) {
 			localStorage.setItem("record_time", playerTime);
 			pFinalResult.innerHTML = "¡Felicidades! ¡Superáste el record!";
@@ -215,13 +250,11 @@ function gameWinner() {
 		pFinalResult.innerHTML =
 			"Como es la primera vez que juegas, tienes el record...👍";
 	}
-	showModal();
+
 	console.log({ recordTime, playerTime });
-	level = 0;
-	lives = 3;
-	timeStart = undefined;
 }
 
+// Le da los eventos a los botones
 window.addEventListener("keydown", moveByKeys);
 
 buttonUp.addEventListener("click", moveUp);
@@ -229,7 +262,6 @@ buttonDown.addEventListener("click", moveDown);
 buttonRight.addEventListener("click", moveRight);
 buttonLeft.addEventListener("click", moveLeft);
 
-// Le da los eventos a los botones
 function moveByKeys(event) {
 	if (event.key === "ArrowUp") moveUp();
 	else if (event.key === "ArrowDown") moveDown();

@@ -26,6 +26,12 @@
 				<p class="record">Record🏁 <span id="record"></span></p>
 			</div>
 			<div
+				id="explossion"
+				class="explossion-container inactive"
+			>
+				<p class="explossion">💥</p>
+			</div>
+			<div
 				id="modal"
 				class="modal-container inactive"
 			>
@@ -33,13 +39,20 @@
 					<p id="finalResult"></p>
 					<p id="timeResult"></p>
 					<p>¿Desea jugar otra vez?</p>
-					<div>
+					<div id="modalButtons">
 						<button id="yesButton">Si</button>
 						<button id="noButton">No</button>
 					</div>
 				</div>
 			</div>
-
+			<div
+				id="thanksEndMessage"
+				class="thanks-end-message inactive"
+			>
+				<h3>¡Gracias por haber jugado!</h3>
+				<p>🚀</p>
+				<h3>¡Nos vemos pronto!</h3>
+			</div>
 			<canvas id="game"></canvas>
 			<div class="control-buttons">
 				<button id="left">⬅️</button>
