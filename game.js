@@ -31,12 +31,12 @@ const playerPosition = {
 	y: undefined,
 };
 
-const giftPosition = {
+const planetPosition = {
 	x: undefined,
 	y: undefined,
 };
 
-let bombsPosition = [];
+let aliensPosition = [];
 
 window.addEventListener("load", setCanvasSize);
 window.addEventListener("resize", setCanvasSize);
@@ -45,9 +45,9 @@ window.addEventListener("resize", setCanvasSize);
 function setCanvasSize() {
 	// innerWidth calcula el ancho de la ventana del html y innerHeight calcula el ancho de la ventana del html
 	if (window.innerWidth > window.innerHeight) {
-		canvasSize = window.innerHeight * 0.8;
+		canvasSize = window.innerHeight * 0.75;
 	} else {
-		canvasSize = window.innerWidth * 0.8;
+		canvasSize = window.innerWidth * 0.75;
 	}
 
 	canvas.setAttribute("width", canvasSize);
@@ -104,8 +104,8 @@ function startGame() {
 					console.log({ playerPosition });
 				}
 			} else if (col == "I") {
-				giftPosition.x = xPos;
-				giftPosition.y = yPos;
+				planetPosition.x = xPos;
+				planetPosition.y = yPos;
 			} else if (col == "X") {
 				aliensPosition.push({ x: xPos, y: yPos });
 			}
@@ -119,26 +119,25 @@ function startGame() {
 
 // Movimientos del jugador
 function movePlayer() {
-	const xGiftCrash = playerPosition.x.toFixed(2) == giftPosition.x.toFixed(2);
-	const yGiftCrash = playerPosition.y.toFixed(2) == giftPosition.y.toFixed(2);
-	const giftCrash = xGiftCrash && yGiftCrash;
+	const xGetPlanet = playerPosition.x.toFixed(0) == planetPosition.x.toFixed(0);
+	const yGetPlanet = playerPosition.y.toFixed(0) == planetPosition.y.toFixed(0);
+	const getPlanet = xGetPlanet && yGetPlanet;
 
-	console.log(playerPosition.x, giftPosition.x);
-	console.log(playerPosition.y, giftPosition.y);
+	console.log(playerPosition.x, planetPosition.x);
+	console.log(playerPosition.y, planetPosition.y);
 
-	if (giftCrash) {
+	if (getPlanet) {
 		levelWinner();
 	}
 
 	const alienCrash = aliensPosition.find((alien) => {
-		const xAlienCrash = alien.x.toFixed(2) == playerPosition.x.toFixed(2);
-		const yAlienCrash = alien.y.toFixed(2) == playerPosition.y.toFixed(2);
+		const xAlienCrash = alien.x.toFixed(0) == playerPosition.x.toFixed(0);
+		const yAlienCrash = alien.y.toFixed(0) == playerPosition.y.toFixed(0);
 		return xAlienCrash && yAlienCrash;
 	});
 
 	if (alienCrash) {
-		setInterval(showExplossion(), 1000);
-		levelFailed();
+		showExplossion();
 	}
 
 	gameContext.fillText(emojis["PLAYER"], playerPosition.x, playerPosition.y);
@@ -146,7 +145,10 @@ function movePlayer() {
 
 // Cuando hay colisión con un alien
 function showExplossion() {
-	explossion.classList.toggle("inactive");
+	setTimeout(function () {
+		explossion.classList.toggle("inactive");
+	}, 500);
+	levelFailed();
 }
 
 // Cada vez que se pasa un nivel, pasa al siguiente
@@ -163,15 +165,18 @@ function showModal() {
 
 // Cada vez que falla un nivel
 function levelFailed() {
-	lives--;
-	console.log(lives);
+	explossion.classList.toggle("inactive");
+	setTimeout(function () {
+		lives--;
+		console.log(lives);
 
-	if (lives <= 0) {
-		lossGame();
-	}
-	playerPosition.x = undefined;
-	playerPosition.y = undefined;
-	startGame();
+		if (lives <= 0) {
+			lossGame();
+		}
+		playerPosition.x = undefined;
+		playerPosition.y = undefined;
+		startGame();
+	}, 500);
 }
 
 // Cuando se pierden todas las vidas
